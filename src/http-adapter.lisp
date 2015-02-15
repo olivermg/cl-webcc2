@@ -1,4 +1,4 @@
-(in-package :cl-webcc2)
+(in-package #:cl-webcc2)
 
 (export '(cc-acceptor))
 

@@ -18,6 +18,9 @@
 	       :hunchentoot)
   :components ((:file "packages")
 	       (:module src
-			:components ((:file "http-adapter")
-				     (:file "continuations"))
+			:components ((:file "http-adapter"
+					    :depends-on ("continuations"
+							 "storage"))
+				     (:file "continuations")
+				     (:file "storage"))
 			:depends-on ("packages"))))
