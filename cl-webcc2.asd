@@ -15,7 +15,8 @@
   :licence "BSD"
   :description "cl-webcc2"
   :depends-on (:cl-cont
-	       :hunchentoot)
+	       :hunchentoot
+	       :uuid)
   :components ((:file "packages")
 	       (:module src
 			:components ((:file "http-adapter"
