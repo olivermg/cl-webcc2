@@ -22,6 +22,8 @@
   ;;  2. when calling k, it will return again, now the value that has been given as
   ;;     argument to k when calling it.
   (with-call/cc
+    ;; placing code right here between with-call/cc and call/cc will get run when
+    ;; the continuation k is invoked
     (call/cc
      (lambda (k)
        (cons "<input type=\"text\" name=\"foo\"></input>"
