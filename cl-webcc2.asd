@@ -16,12 +16,15 @@
   :description "cl-webcc2"
   :depends-on (:cl-cont
 	       :hunchentoot
-	       :uuid)
+	       :uuid
+	       :cl-who)
   :components ((:file "packages")
 	       (:module src
 			:components ((:file "http-adapter"
 					    :depends-on ("continuations"
 							 "storage"))
 				     (:file "continuations")
-				     (:file "storage"))
+				     (:file "storage")
+				     (:file "storage-hash"
+					    :depends-on ("storage")))
 			:depends-on ("packages"))))

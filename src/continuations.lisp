@@ -2,17 +2,21 @@
 
 (export '())
 
-(defun lookup (ref)
+#|
+(defun lookup-cc (cc-ref)
   (declare (ignore ref))
   (with-call/cc
     (cons 11
 	  (call/cc (lambda (k)
 		     k)))))
-
-#|
-(defun continue (cc-ref)
-  (let ((cc ()))))
 |#
+
+(defun continue-cc (storage cc-ref &rest args)
+  (let ((cc (lookup storage cc-ref)))
+    (if cc
+	(apply (continuation-value cc)
+	       args)
+	(error "cannot find continuation with ref ~a" cc-ref))))
 
 (defun read-value-sequentially ())
 
@@ -26,16 +30,17 @@
     ;; the continuation k is invoked
     (call/cc
      (lambda (k)
-       (store-continuation storage k)
-       (cons "<input type=\"text\" name=\"foo\"></input>"
-	     k)))))
+       (let ((cc-ref (store-cc storage (make-instance 'continuation :value k))))
+	 (with-html-output-to-string (str)
+	   (:form :method "post" :action (format nil "/cc-~a" cc-ref)
+		  (:input :type "text")
+		  (:input :type "submit"))))))))
 
-(defun make-ref ()
-  (with-output-to-string (uuid-string)
-    (uuid:print-bytes uuid-string
-                      (uuid:make-v4-uuid))))
-
-(defun store-continuation (storage cc)
-  (let ((ref (make-ref)))
-    (store storage key cc)
-    ref))
+(defun store-cc (storage cc)
+  (labels ((make-ref ()
+	     (with-output-to-string (uuid-string)
+	       (uuid:print-bytes uuid-string
+				 (uuid:make-v4-uuid)))))
+    (let ((ref (make-ref)))
+      (store storage ref cc)
+      ref)))

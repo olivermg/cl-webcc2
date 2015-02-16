@@ -8,4 +8,5 @@
 
 (defmethod store ((storage hash-table) (cc-ref string) (cc-value continuation))
   (setf (gethash cc-ref storage)
-	cc-value))
+	cc-value)
+  cc-ref)
