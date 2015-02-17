@@ -3,6 +3,35 @@
 (export '())
 
 #|
+
+;; in the end as user code, we want to have something like:
+
+(defun change-password-action ()
+  (multiple-value-bind
+	((new-password new-password-confirm (read-passwords)))
+      (if (not (fullfills-requirements-p new-password))
+	  (display-error "password invalid!")
+	  (progn
+	    (change-password new-password)
+	    (display-success "password changed.")))))
+
+'read-passwords' presents some kind of form to the user that lets him
+enter the password. this function must:
+ 1. store the current continuation
+ 2. respond to the current http request with the html form
+ 3. evaluate to the entered form values after the user has clicked some
+    button or such, which must lead to the step-1-continuation to be
+    run.
+
+'read-passwords' must be able to:
+ - store a continuation
+ - render a html template
+ - generate a link that will lead to the continuation to be run when
+   clicked
+
+|#
+
+#|
 (defun lookup-cc (cc-ref)
   (declare (ignore ref))
   (with-call/cc
@@ -17,6 +46,8 @@
 	(apply (continuation-value cc)
 	       args)
 	(error "cannot find continuation with ref ~a" cc-ref))))
+
+
 
 (defun read-value-sequentially ())
 
