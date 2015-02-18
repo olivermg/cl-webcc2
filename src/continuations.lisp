@@ -51,7 +51,7 @@ enter the password. this function must:
 
 (defun read-value-sequentially ())
 
-(defun read-value (storage)
+(defun read-value (storage template)
   ;; the trick of this function is that it will return twice:
   ;;  1. it will return the value that the inner lambda evaluates to (that cons there).
   ;;  2. when calling k, it will return again, now the value that has been given as
@@ -62,10 +62,18 @@ enter the password. this function must:
     (call/cc
      (lambda (k)
        (let ((cc-ref (store-cc storage (make-instance 'continuation :value k))))
+	 (with-rendered-template
+	     rendered
+	     template
+	     `((:__CONTINUATION__ . ,cc-ref))
+	   rendered)
+	 #|
 	 (with-html-output-to-string (str)
 	   (:form :method "post" :action (format nil "/cc-~a" cc-ref)
 		  (:input :type "text")
-		  (:input :type "submit"))))))))
+		  (:input :type "submit")))
+	 |#
+	 )))))
 
 (defun store-cc (storage cc)
   (labels ((make-ref ()

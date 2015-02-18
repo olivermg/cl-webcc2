@@ -20,7 +20,8 @@
 	       :cl-who)
   :components ((:file "packages")
 	       (:module src
-			:components ((:file "http-adapter"
+			:components ((:file "template")
+				     (:file "http-adapter"
 					    :depends-on ("continuations"
 							 "storage"))
 				     (:file "continuations")
