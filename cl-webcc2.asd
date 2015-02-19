@@ -17,7 +17,8 @@
   :depends-on (:cl-cont
 	       :hunchentoot
 	       :uuid
-	       :cl-who)
+	       :cl-who
+	       :cl-ppcre)
   :components ((:file "packages")
 	       (:module src
 			:components ((:file "template")

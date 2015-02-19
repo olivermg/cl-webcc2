@@ -62,11 +62,16 @@ enter the password. this function must:
     (call/cc
      (lambda (k)
        (let ((cc-ref (store-cc storage (make-instance 'continuation :value k))))
+	 (regex-replace-all "__CONTINUATION__"
+			    template
+			    cc-ref)
+	 #|
 	 (with-rendered-template
 	     rendered
 	     template
 	     `((:__CONTINUATION__ . ,cc-ref))
 	   rendered)
+	 |#
 	 #|
 	 (with-html-output-to-string (str)
 	   (:form :method "post" :action (format nil "/cc-~a" cc-ref)
