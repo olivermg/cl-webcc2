@@ -2,6 +2,9 @@
 
 (export '())
 
+(defparameter *cc-storage* (make-hash-table))
+
+
 #|
 
 ;; in the end as user code, we want to have something like:
@@ -40,8 +43,8 @@ enter the password. this function must:
 		     k)))))
 |#
 
-(defun continue-cc (storage cc-ref &rest args)
-  (let ((cc (lookup storage cc-ref)))
+(defun continue-cc (cc-ref &rest args)
+  (let ((cc (lookup *cc-storage* cc-ref)))
     (if cc
 	(apply (continuation-value cc)
 	       args)
@@ -51,7 +54,7 @@ enter the password. this function must:
 
 (defun read-value-sequentially ())
 
-(defun read-value (storage template)
+(defun read-value (template)
   ;; the trick of this function is that it will return twice:
   ;;  1. it will return the value that the inner lambda evaluates to (that cons there).
   ;;  2. when calling k, it will return again, now the value that has been given as
@@ -61,7 +64,7 @@ enter the password. this function must:
     ;; the continuation k is invoked
     (call/cc
      (lambda (k)
-       (let ((cc-ref (store-cc storage (make-instance 'continuation :value k))))
+       (let ((cc-ref (store-cc *cc-storage* (make-instance 'continuation :value k))))
 	 (regex-replace-all "__CONTINUATION__"
 			    template
 			    cc-ref)
@@ -80,11 +83,11 @@ enter the password. this function must:
 	 |#
 	 )))))
 
-(defun store-cc (storage cc)
+(defun store-cc (cc)
   (labels ((make-ref ()
 	     (with-output-to-string (uuid-string)
 	       (uuid:print-bytes uuid-string
 				 (uuid:make-v4-uuid)))))
     (let ((ref (make-ref)))
-      (store storage ref cc)
+      (store *cc-storage* ref cc)
       ref)))

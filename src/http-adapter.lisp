@@ -11,9 +11,7 @@
 |#
 
 (defmethod acceptor-dispatch-request ((acceptor cc-acceptor) request)
-  (let ((cc-cookie (cookie-in "continuation" request)))
-    (when cc-cookie
-      (format t "found continuation: ~a~%" cc-cookie)
-      (format t "result: ~a~%" (funcall (lookup cc-cookie)))
-      (format t "continuation done.~%")))
-  (call-next-method))
+  (let ((cc-ref (cookie-in "continuation" request)))
+    (if cc-ref
+	(continue-cc cc-ref)
+	(call-next-method))))
