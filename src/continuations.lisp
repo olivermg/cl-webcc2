@@ -1,9 +1,9 @@
 (in-package #:cl-webcc2)
 
-(export '(read-value))
+(export '())
 
 
-(defparameter *cc-storage* (make-hash-table))
+(defparameter *cc-storage* (make-hash-table :test 'equalp))
 
 
 #|
@@ -44,20 +44,21 @@ enter the password. this function must:
 
 
 
-(defun read-value (template)
+(defun/cc read-value-cc (template cc-processor)
+  ;; (not true anymore, since with-call/cc moved out of this function)
   ;; the trick of this function is that it will return twice:
   ;;  1. it will return the value that the inner lambda evaluates to (that cons there).
   ;;  2. when calling k, it will return again, now the value that has been given as
   ;;     argument to k when calling it.
-  (with-call/cc
+;  ()with-call/cc
     ;; placing code right here between with-call/cc and call/cc will get run when
     ;; the continuation k is invoked
-    (call/cc
-     (lambda (k)
-       (let ((cc-ref (store-cc (make-instance 'continuation :value k))))
-	 (regex-replace-all "__CONTINUATION__"
-			    template
-			    cc-ref))))))
+
+  (call/cc
+   (lambda (k)
+     (let ((cc-ref (store-cc (make-instance 'continuation :value k))))
+       (funcall cc-processor cc-ref)
+       template))))
 
 (defun store-cc (cc)
   (labels ((make-ref ()
