@@ -1,6 +1,7 @@
 (in-package #:cl-webcc2)
 
-(export '())
+(export '(read-value))
+
 
 (defparameter *cc-storage* (make-hash-table))
 
@@ -34,15 +35,6 @@ enter the password. this function must:
 
 |#
 
-#|
-(defun lookup-cc (cc-ref)
-  (declare (ignore ref))
-  (with-call/cc
-    (cons 11
-	  (call/cc (lambda (k)
-		     k)))))
-|#
-
 (defun continue-cc (cc-ref &rest args)
   (let ((cc (lookup *cc-storage* cc-ref)))
     (if cc
@@ -51,8 +43,6 @@ enter the password. this function must:
 	(error "cannot find continuation with ref ~a" cc-ref))))
 
 
-
-(defun read-value-sequentially ())
 
 (defun read-value (template)
   ;; the trick of this function is that it will return twice:
@@ -64,24 +54,10 @@ enter the password. this function must:
     ;; the continuation k is invoked
     (call/cc
      (lambda (k)
-       (let ((cc-ref (store-cc *cc-storage* (make-instance 'continuation :value k))))
+       (let ((cc-ref (store-cc (make-instance 'continuation :value k))))
 	 (regex-replace-all "__CONTINUATION__"
 			    template
-			    cc-ref)
-	 #|
-	 (with-rendered-template
-	     rendered
-	     template
-	     `((:__CONTINUATION__ . ,cc-ref))
-	   rendered)
-	 |#
-	 #|
-	 (with-html-output-to-string (str)
-	   (:form :method "post" :action (format nil "/cc-~a" cc-ref)
-		  (:input :type "text")
-		  (:input :type "submit")))
-	 |#
-	 )))))
+			    cc-ref))))))
 
 (defun store-cc (cc)
   (labels ((make-ref ()
