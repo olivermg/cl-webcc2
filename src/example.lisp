@@ -6,11 +6,10 @@
 				   :port 9999
 				   :persistent-connections-p nil))
 
-(hunchentoot:define-easy-handler
+(cl-webcc2:define-cc-handler
     (wurst :uri "/wurst")
     (x)
-  (cl-cont:with-call/cc
-    (format nil "result: ~a~%"
-	    (cl-webcc2:read-value (format nil "~a" x)))))
+  (format nil "result: ~a~%"
+	  (cl-webcc2:read-value (format nil "~a" x))))
 
 (hunchentoot:start *acc*)

@@ -1,6 +1,7 @@
 (in-package #:cl-webcc2)
 
 (export '(cc-acceptor
+	  define-cc-handler
 	  read-value))
 
 (defclass cc-acceptor (easy-acceptor)
@@ -13,6 +14,13 @@
     (if cc-ref
 	(continue-cc cc-ref)
 	(call-next-method))))
+
+(defmacro define-cc-handler (description lambda-list &body body)
+  `(hunchentoot:define-easy-handler
+       ,description
+       ,lambda-list
+     (cl-cont::with-call/cc
+       ,@body)))
 
 (defun cc-to-cookie (cc-ref)
   (set-cookie *cc-cookie-name*
