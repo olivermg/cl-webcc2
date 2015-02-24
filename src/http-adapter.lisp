@@ -12,14 +12,15 @@
 (defmethod acceptor-dispatch-request ((acceptor cc-acceptor) request)
   (let ((cc-ref (cookie-in *cc-cookie-name* request)))
     (if cc-ref
-	(continue-cc cc-ref)
+	(continue-cc cc-ref (append (post-parameters*)
+				    (get-parameters*)))
 	(call-next-method))))
 
 (defmacro define-cc-handler (description lambda-list &body body)
   `(hunchentoot:define-easy-handler
        ,description
        ,lambda-list
-     (cl-cont::with-call/cc
+     (cl-cont:with-call/cc
        ,@body)))
 
 (defun cc-to-cookie (cc-ref)
