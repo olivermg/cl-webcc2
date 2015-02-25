@@ -20,9 +20,7 @@
     (schinken :uri "/schinken")
     ()
   (format nil "result: ~a~%"
-	  (+ (parse-integer
-	      (cl-webcc2:read-value "val1:"))
-	     (parse-integer
-	      (cl-webcc2:read-value "val2:")))))
+	  (+ (cl-webcc2:read-integer "val1:")
+	     (cl-webcc2:read-integer "val2:"))))
 
 (hunchentoot:start *acc*)
