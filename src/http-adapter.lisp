@@ -28,4 +28,5 @@
 	      :value cc-ref))
 
 (defun/cc read-value (template)
-  (read-value-cc template #'cc-to-cookie))
+  (cdar
+   (read-value-cc template #'cc-to-cookie)))

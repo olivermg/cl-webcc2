@@ -21,10 +21,8 @@
     ()
   (format nil "result: ~a~%"
 	  (+ (parse-integer
-	      (cdr (assoc "val1" (cl-webcc2:read-value "val1:")
-			  :test #'string-equal)))
+	      (cl-webcc2:read-value "val1:"))
 	     (parse-integer
-	      (cdr (assoc "val2" (cl-webcc2:read-value "val2:")
-			  :test #'string-equal))))))
+	      (cl-webcc2:read-value "val2:")))))
 
 (hunchentoot:start *acc*)
