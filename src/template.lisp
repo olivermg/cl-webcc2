@@ -2,6 +2,20 @@
 
 (export '())
 
+(defclass template ()
+  ((name :initarg name
+	 :accessor template-name)
+   (value :initarg value
+	  :accessor template-value)))
+
+(defmacro deftemplate (name value (&rest vars))
+  `(defclass ,name (template)
+     ,@(loop
+	  for var in vars
+	  collect `(,var :initarg ,var
+			 :accessor ,var))))
+
+
 (defmacro with-rendered-template (var template (&rest vars-alist) &body body)
   `(let ((,var
 	  (labels

@@ -37,3 +37,6 @@
 (defun/cc read-integer (template)
   (parse-integer
    (read-value template)))
+
+(defun/cc read-string (template)
+  (read-value template))
