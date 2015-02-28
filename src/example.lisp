@@ -28,9 +28,9 @@
 #|
 
 would like to have something like this:
-  (defentity integer)
+  (defentity integer ((value integer)))
 that produces definitions for
-  (defstruct integer)???
+  (defstruct integer value)
 
 and something like
   (deftemplate integer-modal integer "<input..." (value1))
@@ -38,5 +38,11 @@ that produces definitions for
   (read-integer-modal)
 that presents the above template to the user, reads a parameter 'value1' of type integer
 and returns it.
+
+or e.g. for forms:
+
+(defentity password-form ((oldpw string) (newpw1 string) (newpw2 string)))
+and
+(deftemplate password-modal password-form "<form..." (oldpw newpw1 newpw2))
 
 |#

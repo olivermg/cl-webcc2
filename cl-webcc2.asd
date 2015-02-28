@@ -22,7 +22,8 @@
 	       :cl-wegner)
   :components ((:file "packages")
 	       (:module src
-			:components ((:file "template")
+			:components ((:file "entity")
+				     (:file "template")
 				     (:file "http-adapter"
 					    :depends-on ("continuations"
 							 "storage"))
