@@ -1,16 +1,27 @@
 (in-package #:cl-webcc2)
 
-(export '())
+(export '(deftemplate))
 
 
-(defmacro deftemplate (name type value (&rest vars))
+(defgeneric render-entity (entity))
+(defmethod render-entity (entity)
+  (error "don't know how to render entity ~a" (class-of entity)))
+
+
+(defmacro deftemplate (name entity (&rest templates))
   `(progn
-     (defstruct ,name
-       ,@vars)
+     (defmethod render-entity ((e ,entity))
+       (concatenate 'string
+		    ,@(loop
+			 for (fieldname fieldtemplate) in templates
+			 collect fieldtemplate)))
+     #|
      (defun ,(intern (concatenate 'string
 				  "READ-"
 				  (symbol-name name)))
-	 (read-value ,value))))
+	 (read-value ,value))
+     |#
+     ))
 
 
 (defmacro with-rendered-template (var template (&rest vars-alist) &body body)
