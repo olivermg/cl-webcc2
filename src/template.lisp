@@ -3,25 +3,25 @@
 (export '(deftemplate))
 
 
+#|
 (defgeneric render-entity (entity))
 (defmethod render-entity (entity)
   (error "don't know how to render entity ~a" (class-of entity)))
+|#
 
 
-(defmacro deftemplate (name entity (&rest templates))
+(defmacro deftemplate (entity template)
   `(progn
-     (defmethod render-entity ((e ,entity))
-       (concatenate 'string
-		    ,@(loop
-			 for (fieldname fieldtemplate) in templates
-			 collect fieldtemplate)))
      #|
+     (defmethod render-entity ((e ,entity))
+       ,template)
+     |#
      (defun ,(intern (concatenate 'string
 				  "READ-"
-				  (symbol-name name)))
-	 (read-value ,value))
-     |#
-     ))
+				  (symbol-name entity))
+		     *package*)
+	 ()
+       (read-value ,template))))
 
 
 (defmacro with-rendered-template (var template (&rest vars-alist) &body body)

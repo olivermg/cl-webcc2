@@ -3,11 +3,13 @@
 (export '(defentity))
 
 
-(defclass entity ())
+(defclass entity () ())
 
 
 (defmacro defentity (name &rest field-specifiers)
   `(defclass ,name (entity)
-     ,(loop
-	 for (fname ftype) in field-specifiers
-	 collect `(,fname :type ,ftype))))
+     ,(mapcar #'(lambda (spec)
+		  (destructuring-bind (fname ftype)
+		      spec
+		    `(,fname :type ,ftype)))
+	      field-specifiers)))
