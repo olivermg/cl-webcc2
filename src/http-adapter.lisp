@@ -30,9 +30,12 @@
   (set-cookie *cc-cookie-name*
 	      :value cc-ref))
 
+(defun/cc read-values (template)
+  (read-value-cc template #'cc-to-cookie))
+
 (defun/cc read-value (template)
   (cdar ; TODO: introduce some kind of mapping here
-   (read-value-cc template #'cc-to-cookie)))
+   (read-values template #'cc-to-cookie)))
 
 (defun/cc read-integer (template)
   (parse-integer

@@ -11,17 +11,16 @@
 
 
 (defmacro deftemplate (entity template)
-  `(progn
-     #|
-     (defmethod render-entity ((e ,entity))
-       ,template)
-     |#
-     (defun ,(intern (concatenate 'string
-				  "READ-"
-				  (symbol-name entity))
-		     *package*)
-	 ()
-       (read-value ,template))))
+  `(defun/cc ,(intern (concatenate 'string
+				   "READ-"
+				   (symbol-name entity))
+		      *package*)
+       ()
+     (let ((fields ,(entity-fields entity))
+	   (values (read-values ,template)))
+       (make-instance ',entity
+		      ,@(reduce #'(lambda (s v)
+				    (append s `(TODO))))))))
 
 
 (defmacro with-rendered-template (var template (&rest vars-alist) &body body)
