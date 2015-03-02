@@ -11,16 +11,23 @@
 
 
 (defmacro deftemplate (entity template)
-  `(defun/cc ,(intern (concatenate 'string
-				   "READ-"
-				   (symbol-name entity))
-		      *package*)
-       ()
-     (let ((fields ,(entity-fields entity))
-	   (values (read-values ,template)))
-       (make-instance ',entity
-		      ,@(reduce #'(lambda (s v)
-				    (append s `(TODO))))))))
+  (let ((slots (entity-slots entity)))
+    `(defun/cc ,(intern (concatenate 'string
+				     "READ-"
+				     (symbol-name entity))
+			*package*)
+	 ()
+       (let ((values (read-values ,template))
+	     ;(values '((cl-user::a . "11") (cl-user::b . 22)))
+	     )
+	 (format t "~S - ~S~%" ',slots values)
+	 (make-instance ',entity
+			,@(reduce #'(lambda (s f)
+				      (append s
+					      `(,(intern (symbol-name f) 'keyword)
+						 (cdr (assoc ',f values)))))
+				  slots
+				  :initial-value nil))))))
 
 
 (defmacro with-rendered-template (var template (&rest vars-alist) &body body)
