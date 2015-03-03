@@ -25,7 +25,7 @@
 			,@(reduce #'(lambda (s f)
 				      (append s
 					      `(,(intern (symbol-name f) 'keyword)
-						 (cdr (assoc ',f values)))))
+						 (cdr (assoc (symbol-name ',f) values :test #'equalp)))))
 				  slots
 				  :initial-value nil))))))
 
