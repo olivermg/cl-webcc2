@@ -17,5 +17,11 @@
   `(defclass ,name (entity)
      ,(mapcar #'(lambda (spec)
 		  [d (fname ftype) = spec
-		  `(,fname :initarg ,(intern (symbol-name fname) 'keyword) :type ,ftype)])
+		  `(,fname :initarg ,(intern (symbol-name fname) 'keyword)
+			   :accessor ,(intern (concatenate 'string
+							   (symbol-name name)
+							   "-"
+							   (symbol-name fname))
+					      *package*)
+			   :type ,ftype)])
 	      field-specifiers)))
