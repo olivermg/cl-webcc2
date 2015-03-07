@@ -26,12 +26,15 @@
 |#
 
 (cl-webcc2:defentity pwform (oldpw string) (newpw1 string) (newpw2 string))
-(cl-webcc2:deftemplate pwform "<input name=\"oldpw\" type=\"password\"/>")
+(cl-webcc2:deftemplate 'pwform "<input class=\"pwform\" name=\"oldpw\" type=\"password\"/>")
 (cl-webcc2:define-cc-handler
     (pw :uri "/pw")
     ()
-  (format nil "result: ~a~%"
-	  (read-pwform)))
+  (let ((pwobj (read-pwform)))
+    (format nil "result: oldpw:~a newpw1:~a newpw2:~a~%"
+	    (pwform-oldpw pwobj)
+	    (pwform-newpw1 pwobj)
+	    (pwform-newpw2 pwobj))))
 
 (hunchentoot:start *acc*)
 

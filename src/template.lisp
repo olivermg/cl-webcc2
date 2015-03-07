@@ -11,21 +11,16 @@
 
 
 (defmacro deftemplate (entity template)
-  (let ((slots (entity-slots entity)))
-    `(defun/cc ,(intern (concatenate 'string
-				     "READ-"
-				     (symbol-name entity))
-			*package*)
+  (let* ((real-entity (eval entity))
+	 (slots (entity-slots real-entity)))
+    `(defun/cc ,(build-symbol ("READ-" real-entity))
 	 ()
-       (let ((values (read-values ,template))
-	     ;(values '((cl-user::a . "11") (cl-user::b . 22)))
-	     )
-	 (format t "~S - ~S~%" ',slots values)
-	 (make-instance ',entity
+       (let ((values (read-values ,template)))
+	 (make-instance ',real-entity
 			,@(reduce #'(lambda (s f)
 				      (append s
-					      `(,(intern (symbol-name f) 'keyword)
-						 (cdr (assoc (symbol-name ',f) values :test #'equalp)))))
+					      `(,(build-symbol (f) 'keyword)
+						 (cdr (assoc ,(symbol-name f) values :test #'equalp)))))
 				  slots
 				  :initial-value nil))))))
 
