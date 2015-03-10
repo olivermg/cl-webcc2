@@ -7,12 +7,13 @@
 (defclass cc-acceptor (easy-acceptor)
   ())
 
-;(defparameter *cc-parameter-name* "__continuation__")
-(defparameter *cc-header-name* "x-continuation")
+(defparameter *cc-parameter-name* "__continuation__")
+;(defparameter *cc-header-name* "x-continuation")
 
 (defmethod acceptor-dispatch-request ((acceptor cc-acceptor) request)
-  (let ((cc-ref ;(parameter *cc-parameter-name*)
-	  (header-in *cc-header-name* request)))
+  (let ((cc-ref (parameter *cc-parameter-name*)
+	  ;(header-in *cc-header-name* request)
+	 ))
     (if (> (length cc-ref) 0)
 	(continue-cc cc-ref (append (post-parameters*)
 				    (get-parameters*)))
@@ -30,8 +31,11 @@
   (set-cookie *cc-cookie-name*
 	      :value cc-ref)
   |#
+  #|
   (setf (header-out *cc-header-name*)
-	cc-ref))
+	cc-ref)
+  |#
+  (declare (ignore cc-ref)))
 
 (defun/cc read-values (template)
   (read-value-cc template #'cc-to-cookie))
