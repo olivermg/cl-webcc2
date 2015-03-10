@@ -46,7 +46,7 @@ enter the password. this function must:
 
 
 
-(defun/cc read-value-cc (template cc-processor)
+(defun/cc read-value-cc (template &optional cc-callback)
   ;; (not true anymore, since with-call/cc moved out of this function)
   ;; the trick of this function is that it will return twice:
   ;;  1. it will return the value that the inner lambda evaluates to (that cons there).
@@ -59,7 +59,8 @@ enter the password. this function must:
   (call/cc
    (lambda (k)
      (let ((cc-ref (store-cc (make-instance 'continuation :value k))))
-       (funcall cc-processor cc-ref)
+       (when cc-callback
+	 (funcall cc-callback cc-ref))
        (multiple-value-bind
 	     (rendered trash)
 	   (regex-replace-all *cc-template-placeholder*
