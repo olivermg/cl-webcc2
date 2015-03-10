@@ -1,9 +1,11 @@
 (in-package #:cl-webcc2)
 
-(export '())
+(export '(*cc-template-placeholder*))
 
 
 (defparameter *cc-storage* (make-hash-table :test 'equalp))
+
+(defparameter *cc-template-placeholder* "__continuation__")
 
 
 #|
@@ -58,7 +60,13 @@ enter the password. this function must:
    (lambda (k)
      (let ((cc-ref (store-cc (make-instance 'continuation :value k))))
        (funcall cc-processor cc-ref)
-       template))))
+       (multiple-value-bind
+	     (rendered trash)
+	   (regex-replace-all *cc-template-placeholder*
+			      template
+			      cc-ref)
+	 (declare (ignore trash))
+	 rendered)))))
 
 (defun store-cc (cc)
   (labels ((make-ref ()

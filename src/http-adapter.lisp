@@ -7,16 +7,15 @@
 (defclass cc-acceptor (easy-acceptor)
   ())
 
-(defparameter *cc-cookie-name* "continuation")
+;(defparameter *cc-parameter-name* "__continuation__")
+(defparameter *cc-header-name* "x-continuation")
 
 (defmethod acceptor-dispatch-request ((acceptor cc-acceptor) request)
-  (let ((cc-ref (cookie-in *cc-cookie-name* request)))
+  (let ((cc-ref ;(parameter *cc-parameter-name*)
+	  (header-in *cc-header-name* request)))
     (if (> (length cc-ref) 0)
-	(progn
-	  (set-cookie *cc-cookie-name*
-		      :value "")
-	  (continue-cc cc-ref (append (post-parameters*)
-				      (get-parameters*))))
+	(continue-cc cc-ref (append (post-parameters*)
+				    (get-parameters*)))
 	(call-next-method))))
 
 (defmacro define-cc-handler (description lambda-list &body body)
@@ -27,8 +26,12 @@
        ,@body)))
 
 (defun cc-to-cookie (cc-ref)
+  #|
   (set-cookie *cc-cookie-name*
-	      :value cc-ref))
+	      :value cc-ref)
+  |#
+  (setf (header-out *cc-header-name*)
+	cc-ref))
 
 (defun/cc read-values (template)
   (read-value-cc template #'cc-to-cookie))

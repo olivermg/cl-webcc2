@@ -25,6 +25,7 @@
 				  :initial-value nil))))))
 
 
+#|
 (defmacro with-rendered-template (var template (&rest vars-alist) &body body)
   `(let ((,var
 	  (labels
@@ -43,3 +44,4 @@
 			  (replace-var rendered key val)))
 	      rendered))))
      ,@body))
+|#

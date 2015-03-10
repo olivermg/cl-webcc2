@@ -26,7 +26,10 @@
 |#
 
 (cl-webcc2:defentity pwform (oldpw string) (newpw1 string) (newpw2 string))
-(cl-webcc2:deftemplate 'pwform "<input class=\"pwform\" name=\"oldpw\" type=\"password\"/>")
+(cl-webcc2:deftemplate 'pwform (concatenate 'string
+					    "<input class=\"pwform\" name=\"oldpw\" cc=\""
+					    cl-webcc2:*cc-template-placeholder*
+					    "\" type=\"password\"/>"))
 (cl-webcc2:define-cc-handler
     (pw :uri "/pw")
     ()
